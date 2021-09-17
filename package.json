@@ -1,0 +1,27 @@
+{
+  "name": "a1-ssg",
+  "version": "1.0.0",
+  "description": "OSD600 A1",
+  "main": "src/index.js",
+  "bin": {
+    "a1-ssg": "src/index.js"
+  },
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jjung99/a1-ssg.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jjung99/a1-ssg/issues"
+  },
+  "homepage": "https://github.com/jjung99/a1-ssg#readme",
+  "dependencies": {
+    "yargs": "^17.1.1"
+  }
+}

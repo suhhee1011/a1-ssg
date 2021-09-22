@@ -33,10 +33,12 @@
 ```
 
 + To generate html file (example commands) 
+
     + file name "abc.txt"
       ```c
        node . -i 'abc.txt'
       ```
+      
     + folder name "abc"
       ```c
        node . -i abc

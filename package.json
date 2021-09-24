@@ -6,7 +6,7 @@
   "bin": {
     "a1-ssg": "src/index.js"
   },
-  "type": "module",
+
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

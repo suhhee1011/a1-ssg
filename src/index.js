@@ -47,6 +47,27 @@ async function main() {
 
         const res = await fs.promises.readFile(file, 'utf-8');
         fileType = argv.input.split('.').pop();
+        let html ='';
+       
+        if(fileType == 'md'){
+            let resArr = res.split('\n');
+        resArr.map(e =>{
+            if(e.includes('###### '))
+                html += `<h6>${e.replace('###### ', ' ').trim()}</h6>`; 
+            else if(e.includes('##### '))
+                html += `<h5>${e.replace('##### ', ' ').trim()}</h5>`; 
+            else if(e.includes('#### '))
+                html += `<h4>${e.replace('#### ', ' ').trim()}</h4>`; 
+            else if(e.includes('### '))
+                html += `<h3>${e.replace('### ', ' ').trim()}</h3>\n`; 
+            else if(e.includes('## '))
+                html += `<h2>${e.replace('## ', ' ').trim()}</h2>\n`; 
+            else if(e.includes('# '))
+                html += `<h1>${e.replace('# ', ' ').trim()}</h1>\n`;  
+            else
+                html += `<p>${e}</p>\n`;
+        }).join(' ');
+        }
         let resArr = res.split('\n\n');
         resArr = resArr.map(e => `<p>${e}</p>\n`);
         // console.log(resArr);

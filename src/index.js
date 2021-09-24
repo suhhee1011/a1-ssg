@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-":" //# comment; exec /usr/bin/env node --input-type=module - "$@" < "$0"
+//# comment; exec /usr/bin/env node --input-type=module - "$@" < "$0"
 
-import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
-import fs from 'fs';
+let yargs = require('yargs/yargs');
+let {hideBin} = require('yargs/helpers');
+let fs = require('fs');
 
 const getHTML = (title, contents) => `<!doctype html>
 <html lang="en">

@@ -46,6 +46,7 @@ async function main() {
     for (const file of files) {
 
         const res = await fs.promises.readFile(file, 'utf-8');
+        fileType = argv.input.split('.').pop();
         let resArr = res.split('\n\n');
         resArr = resArr.map(e => `<p>${e}</p>\n`);
         // console.log(resArr);

@@ -67,16 +67,17 @@ async function main() {
             else
                 html += `<p>${e}</p>\n`;
         }).join(' ');
+        }else if(fileType == 'txt'){
+            let resArr = res.split('\n\n');
+            resArr = resArr.map(e => html += `<p>${e}</p>\n`).join('');
         }
-        let resArr = res.split('\n\n');
-        resArr = resArr.map(e => `<p>${e}</p>\n`);
         // console.log(resArr);
         const fileNameExt = file.split('/')[file.split('/').length - 1];
         const filename = fileNameExt.split('.')[0];
         if (!fs.existsSync('dist')) {
             fs.mkdirSync('dist');
         }
-        await fs.promises.writeFile(`dist/${filename}.html`, getHTML(filename, resArr.join("")));
+        await fs.promises.writeFile(`dist/${filename}.html`, getHTML(filename, html));
     }
 
 }

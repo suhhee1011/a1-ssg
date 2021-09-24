@@ -8,7 +8,7 @@
     + -i or -input: allow file or folder as input
   
   + create html file from input (a text file or all the text file in the input folder)
- 
+  + create html file from input (a md file or all the md file in the input folder)
 ### Prerequisite
 
 + open your favorite terminal 
@@ -42,5 +42,9 @@
     + folder name "abc"
       ```c
        node . -i abc
+      ```    
+    + file name "abc.md"
+      ```c
+       node . -i 'abc.md'
       ```
 

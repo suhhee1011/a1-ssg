@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-":" //# comment; exec /usr/bin/env node --input-type=module - "$@" < "$0"
+//# comment; exec /usr/bin/env node --input-type=module - "$@" < "$0"
 
-import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
-import fs from 'fs';
+let yargs = require('yargs/yargs');
+let {hideBin} = require('yargs/helpers');
+let fs = require('fs');
 
 const getHTML = (title, contents) => `<!doctype html>
 <html lang="en">
@@ -46,15 +46,38 @@ async function main() {
     for (const file of files) {
 
         const res = await fs.promises.readFile(file, 'utf-8');
-        let resArr = res.split('\n\n');
-        resArr = resArr.map(e => `<p>${e}</p>\n`);
+        fileType = argv.input.split('.').pop();
+        let html ='';
+       
+        if(fileType == 'md'){
+            let resArr = res.split('\n');
+        resArr.map(e =>{
+            if(e.includes('###### '))
+                html += `<h6>${e.replace('###### ', ' ').trim()}</h6>`; 
+            else if(e.includes('##### '))
+                html += `<h5>${e.replace('##### ', ' ').trim()}</h5>`; 
+            else if(e.includes('#### '))
+                html += `<h4>${e.replace('#### ', ' ').trim()}</h4>`; 
+            else if(e.includes('### '))
+                html += `<h3>${e.replace('### ', ' ').trim()}</h3>\n`; 
+            else if(e.includes('## '))
+                html += `<h2>${e.replace('## ', ' ').trim()}</h2>\n`; 
+            else if(e.includes('# '))
+                html += `<h1>${e.replace('# ', ' ').trim()}</h1>\n`;  
+            else
+                html += `<p>${e}</p>\n`;
+        }).join(' ');
+        }else if(fileType == 'txt'){
+            let resArr = res.split('\n\n');
+            resArr = resArr.map(e => html += `<p>${e}</p>\n`).join('');
+        }
         // console.log(resArr);
         const fileNameExt = file.split('/')[file.split('/').length - 1];
         const filename = fileNameExt.split('.')[0];
         if (!fs.existsSync('dist')) {
             fs.mkdirSync('dist');
         }
-        await fs.promises.writeFile(`dist/${filename}.html`, getHTML(filename, resArr.join("")));
+        await fs.promises.writeFile(`dist/${filename}.html`, getHTML(filename, html));
     }
 
 }

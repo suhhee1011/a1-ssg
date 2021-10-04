@@ -1,6 +1,8 @@
 # SSG(Static Site Generator)
 ## SSG is a program that creating html file with a text file.
 
+---
+
 ### features
   + command flags
     + -v or -version : show its current version

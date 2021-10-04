@@ -5,8 +5,8 @@ let yargs = require('yargs/yargs');
 let {hideBin} = require('yargs/helpers');
 let fs = require('fs');
 
-const getHTML = (title, contents) => `<!doctype html>
-<html lang="en">
+const getHTML = (title, contents, lang) => `<!doctype html>
+<html lang="${lang}">
 <head>
   <meta charset="utf-8">
   <title>${title}</title>
@@ -26,13 +26,18 @@ async function main() {
             type: 'string',
             required: true
         })
+        .option('l', {
+            alias: 'lang',
+            describe: 'lang attribute for html',
+            type: 'string',
+            required: false
+        })
         .alias('v', 'version')
         .version('v', '0.0.1')
         .alias('h', 'help')
         .help('h', 'Display help');
 
-    const { input } = argv; // const input = argv.input; 
-    console.log(input);
+    const { input, lang } = argv; // const input = argv.input; 
 
     let files = [];
     if (fs.lstatSync(input).isDirectory()) {
@@ -41,32 +46,36 @@ async function main() {
     } else {
         files.push(input);
     }
-    console.log(files);
 
     for (const file of files) {
 
         const res = await fs.promises.readFile(file, 'utf-8');
         fileType = argv.input.split('.').pop();
         let html ='';
+        const deli = process.platform === 'win32' ? '\r\n' : '\n'; 
        
         if(fileType == 'md'){
-            let resArr = res.split('\n');
-        resArr.map(e =>{
-            if(e.includes('###### '))
-                html += `<h6>${e.replace('###### ', ' ').trim()}</h6>`; 
-            else if(e.includes('##### '))
-                html += `<h5>${e.replace('##### ', ' ').trim()}</h5>`; 
-            else if(e.includes('#### '))
-                html += `<h4>${e.replace('#### ', ' ').trim()}</h4>`; 
-            else if(e.includes('### '))
-                html += `<h3>${e.replace('### ', ' ').trim()}</h3>\n`; 
-            else if(e.includes('## '))
-                html += `<h2>${e.replace('## ', ' ').trim()}</h2>\n`; 
-            else if(e.includes('# '))
-                html += `<h1>${e.replace('# ', ' ').trim()}</h1>\n`;  
-            else
-                html += `<p>${e}</p>\n`;
-        }).join(' ');
+            let resArr = res.split(deli);
+            resArr.filter(e => e).map(e =>{
+                if(e.includes('###### '))
+                    html += `<h6>${e.replace('###### ', ' ').trim()}</h6>${deli}`; 
+                else if(e.includes('##### '))
+                    html += `<h5>${e.replace('##### ', ' ').trim()}</h5>${deli}`; 
+                else if(e.includes('#### '))
+                    html += `<h4>${e.replace('#### ', ' ').trim()}</h4>${deli}`; 
+                else if(e.includes('### '))
+                    html += `<h3>${e.replace('### ', ' ').trim()}</h3>${deli}`; 
+                else if(e.includes('## '))
+                    html += `<h2>${e.replace('## ', ' ').trim()}</h2>${deli}`; 
+                else if(e.includes('# '))
+                    html += `<h1>${e.replace('# ', ' ').trim()}</h1>${deli}`;
+                else if(e === '---')  
+                    html += `<hr>${deli}`;                    
+                else
+                    html += `<p>${e}</p>${deli}`;
+            }).join(' ');
+
+
         }else if(fileType == 'txt'){
             let resArr = res.split('\n\n');
             resArr = resArr.map(e => html += `<p>${e}</p>\n`).join('');
@@ -77,7 +86,7 @@ async function main() {
         if (!fs.existsSync('dist')) {
             fs.mkdirSync('dist');
         }
-        await fs.promises.writeFile(`dist/${filename}.html`, getHTML(filename, html));
+        await fs.promises.writeFile(`dist/${filename}.html`, getHTML(filename, html, lang));
     }
 
 }

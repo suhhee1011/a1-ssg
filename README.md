@@ -23,7 +23,10 @@
 - type the following command
 
 ```
-npm i -g []
+npm i -g [code URL]
+
+code URL: https://github.com/jjung99/a1-ssg.git
+
 ```
 
 ### Uasge

@@ -1,7 +1,6 @@
-#!/usr/bin/env bash
-//# comment; exec /usr/bin/env node --input-type=module - "$@" < "$0"
+#!/usr/bin/env node
 
-let yargs = require('yargs/yargs');
+let yargs = require('yargs');
 let {hideBin} = require('yargs/helpers');
 let fs = require('fs');
 

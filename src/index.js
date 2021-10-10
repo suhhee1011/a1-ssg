@@ -4,6 +4,14 @@
 let yargs = require('yargs/yargs');
 let {hideBin} = require('yargs/helpers');
 let fs = require('fs');
+let jsonfile = require('jsonfile');
+
+function isKeyInObject(obj, key) {
+    var res = Object.keys(obj).some(v => v == key);
+    return res;
+}
+
+
 
 const getHTML = (title, contents, lang) => `<!doctype html>
 <html lang="${lang}">
@@ -18,25 +26,10 @@ ${contents}
 </html>
 `
 
-async function main() {
-    const { argv } = yargs(hideBin(process.argv))
-        .option('i', {
-            alias: 'input',
-            describe: 'Provide filename to covert html',
-            type: 'string',
-            required: true
-        })
-        .option('l', {
-            alias: 'lang',
-            describe: 'lang attribute for html',
-            type: 'string',
-            required: false
-        })
-        .alias('v', 'version')
-        .version('v', '0.0.1')
-        .alias('h', 'help')
-        .help('h', 'Display help');
 
+
+
+async function HTMLgenerator(argv, output){
     const { input, lang } = argv; // const input = argv.input; 
 
     let files = [];
@@ -83,11 +76,93 @@ async function main() {
         // console.log(resArr);
         const fileNameExt = file.split('/')[file.split('/').length - 1];
         const filename = fileNameExt.split('.')[0];
-        if (!fs.existsSync('dist')) {
-            fs.mkdirSync('dist');
+        if (!fs.existsSync(output)) {
+            fs.mkdirSync(output);
         }
-        await fs.promises.writeFile(`dist/${filename}.html`, getHTML(filename, html, lang));
+        await fs.promises.writeFile(`${output}/${filename}.html`, getHTML(filename, html, lang));
     }
+}
+
+
+
+
+
+async function main() {
+    const { argv } = yargs(hideBin(process.argv))
+        .option('i', {
+            alias: 'input',
+            describe: 'Provide filename to covert html',
+            type: 'string',
+            required: false
+        })
+        .option('l', {
+            alias: 'lang',
+            describe: 'lang attribute for html',
+            type: 'string',
+            required: false
+        })
+        .option('c', {
+            alias: 'config',
+            describe: 'Provide filename to covert html',
+            type: 'string',
+            required: false
+        })
+        .alias('v', 'version')
+        .version('v', '0.0.1')
+        .alias('h', 'help')
+        .help('h', 'Display help');
+    
+        let output = "dist";
+        if( isKeyInObject(argv, 'c') || isKeyInObject(argv, 'config')){
+            let flags = {inputFlag : false, langFlag : false, outputFlag : false};
+           
+            const file = argv['c'];
+            // let obj = jsonfile.readFileSync(file);
+            try {
+                let obj = jsonfile.readFileSync(file)
+                for(let index in obj){
+                    if( (index == 'i') || (index == 'input')){
+                      argv[index] = obj[index];
+                      flags['inputFlag'] = true;
+                     
+                    }else if( (index == 'l') || (index == 'lang')){
+                          argv[index] = obj[index];
+                          flags['langFlag'] = true;
+                    }
+                    else if( (index == 'o') || (index == 'output')){
+                      output = obj[index];
+                      flags['outputFlag'] = true;
+                }
+               
+                  }
+                  if(flags['inputFlag'] == false){
+                  argv['input'] = "test/The Naval Treaty.txt"
+                  argv['i'] = "test/The Naval Treaty.txt"
+                  }
+                  if(flags['langFlag'] == false){
+                      argv['lang'] = "english"
+                      argv['l'] = "english"
+                      }
+                  if(flags['outputFlag'] == false){
+                          argv['output'] = "dist"
+                          argv['o'] = "dist"
+                          }
+            
+               } catch (e) {
+                if (e.code === 'ENOENT') {
+                        console.error(e)
+                 return null
+                } else {
+                 console.error(e)
+                 return null
+                }
+               }
+              
+
+        }
+
+         HTMLgenerator(argv,output);
+ 
 
 }
 

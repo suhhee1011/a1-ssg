@@ -9,6 +9,7 @@
     + -h or -help : show instruction
     + -i or -input: allow file or folder as input
     + -l or -lang : allow to change lang for html
+    + -c or -config : allow to accept json file as a input.
   
   + create html file from input (a text file or all the text file in the input folder)
   + create html file from input (a md file or all the md file in the input folder)
@@ -53,5 +54,9 @@
     + file name "abc.md" with franch lang version
       ```
         node . -i 'abc.md' -l fr
+      ```
+    + config file name "ssg-config.json"
+      ```
+        node . -c ssg-config.json
       ```
 
